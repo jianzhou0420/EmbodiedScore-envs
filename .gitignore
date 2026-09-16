@@ -5,3 +5,5 @@ build/
 dist/
 .pytest_cache/
 debug_outputs/        # worker --selftest frames
+# Claude Code HUD cache, local session state
+.omc/
