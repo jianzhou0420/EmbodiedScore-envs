@@ -25,7 +25,7 @@ from gymnasium.envs.registration import register
 from .benchmarks import BENCHMARKS, benchmark, build_env, make
 from .benchmarks.env import Act
 
-__version__ = "0.2.0"
+__version__ = "0.0.1"
 
 for _b in BENCHMARKS.values():
     register(id=_b.gym_id, entry_point="embodiedscore_envs.benchmarks:build_env",
