@@ -99,7 +99,7 @@ add the three runtime imports by hand:
 
 ```
 pip install --no-deps -e /path/to/EmbodiedScore-envs
-pip install --no-deps numpy-quaternion fastdtw msgpack-numpy    # what the loaders import
+pip install --no-deps numpy-quaternion numba msgpack-numpy    # what the loaders import
 MUJOCO_GL=egl python -c "
 import embodiedscore_envs as es
 env = es.make('robocasa365-atomic-seen', 'mini'); obs, info = env.reset(options={'episode': 0})

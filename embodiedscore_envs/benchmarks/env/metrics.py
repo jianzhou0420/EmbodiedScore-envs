@@ -19,10 +19,11 @@ StepsTaken), quirks included:
                         habitat's); ``path_length_from="euclid64"`` is the same in float64
                         (EXPRESS's own accounting), ``"step_geodesic"`` sums the pose env's
                         per-step geodesics instead (EXPRESS pose protocol)
-* ``ndtw``              fastdtw(agent locations, episode.gt_path, euclidean);
-                        exp(-dtw / (len(gt) * success_distance)); the location list starts
-                        with the start position and skips a step whose position equals
-                        the previous one
+* ``ndtw``              FastDTW(agent locations, episode.gt_path, euclidean, radius 1) —
+                        ``dtw.py``, a transcription of the fastdtw package's Cython build,
+                        the one that scored the boards; exp(-dtw / (len(gt) *
+                        success_distance)); the location list starts with the start
+                        position and skips a step whose position equals the previous one
 * ``oracle_success``    1.0 once distance_to_goal < success_distance at any point, reset included
 * ``steps_taken``       number of step() calls, STOP included
 
@@ -38,8 +39,8 @@ long-horizon accounting over a chain of sub-tasks.
 from __future__ import annotations
 
 import math
-import warnings
-from typing import Any, Sequence
+from collections.abc import Sequence
+from typing import Any
 
 import gymnasium as gym
 import numpy as np
@@ -79,14 +80,7 @@ def _ratio(d0: float, L: float) -> float:
 
 
 def _fastdtw():
-    import fastdtw as pkg
-    from fastdtw import fastdtw
-    if not pkg.fastdtw.__module__.endswith("_fastdtw"):   # pure-Python fallback in use
-        warnings.warn(
-            "fastdtw is running its pure-Python fallback; nDTW can differ from the habitat-lab "
-            "0.1.7 numbers by ~1e-4 (the boards used the Cython build). Install it with: "
-            "pip install cython && pip install --no-cache-dir --no-binary fastdtw --no-build-isolation fastdtw",
-            RuntimeWarning, stacklevel=3)
+    from .dtw import fastdtw  # numba; imported here so lines without nDTW never JIT
     return fastdtw
 
 
@@ -180,7 +174,7 @@ class NavMetrics(gym.Wrapper):
         self._locations.append(pos)
         if not self._gt:
             return math.nan
-        dtw_distance = self._dtw(self._locations, self._gt, dist=_euclid64)[0]
+        dtw_distance = self._dtw(self._locations, self._gt)[0]   # euclidean in float64, as _euclid64
         return float(np.exp(-dtw_distance / (len(self._gt) * self._sd)))
 
     def _annotate(self, info: dict[str, Any]) -> dict[str, Any]:

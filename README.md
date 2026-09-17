@@ -459,11 +459,9 @@ frames are not bit-identical between renders of one state; the gym ids register
 ## Install
 
 1. habitat-sim 0.3.3 from EmbodiedScore-habitat (`./build.sh --env <env> --verify`) — habitat lines.
-2. `pip install -e .` in the same environment (adds gymnasium, numpy-quaternion, scipy, fastdtw, msgpack).
-   For nDTW to match the habitat-lab 0.1.7 boards to the last digit, fastdtw must be its
-   Cython build (the pip wheel silently falls back to pure Python, which differs by ~1e-4):
-   `pip install cython && pip install --no-cache-dir --no-binary fastdtw --no-build-isolation fastdtw`.
-   `NavMetrics` warns once if the fallback is in use.
+2. `pip install -e .` in the same environment (adds gymnasium, numpy-quaternion, scipy, numba, msgpack).
+   nDTW is computed by `benchmarks/env/dtw.py`, a numba transcription of the fastdtw package's Cython
+   build — bit-for-bit the habitat-lab 0.1.7 number, with no fastdtw install to get right.
 3. Isaac Sim 5.1 — VLNverse lines only: [INSTALL-isaac.md](INSTALL-isaac.md) (pip, workstation
    bundle, or the container launcher in `scripts/`); point `EMBODIEDSCORE_ISAAC_PYTHON` at its python.
 4. LIBERO (robosuite 1.4.1 + MuJoCo) — the `libero-*` lines only, in their own env:

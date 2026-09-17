@@ -45,7 +45,7 @@ conda activate ac-calvin
 pip install --no-cache-dir "numpy==1.26.4" "pybullet==3.2.6" "hydra-core==1.1.1" \
     "hydra-colorlog==1.1.0" "omegaconf==2.1.1" "gym==0.26.2" scipy opencv-python-headless \
     numpy-quaternion pandas matplotlib cloudpickle gitpython rich \
-    "gymnasium>=1.3" fastdtw pillow "msgpack>=1.0" msgpack-numpy pytest
+    "gymnasium>=1.3" numba pillow "msgpack>=1.0" msgpack-numpy pytest
 
 pip install --no-deps -e /data/ws_vln/coding-agents/data/calvin/calvin-src/calvin_env
 pip install --no-deps -e /path/to/EmbodiedScore-envs
